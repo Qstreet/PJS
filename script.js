@@ -69,8 +69,18 @@ function clickHandler(event){
     document.querySelector('#inputToBeChanged').value = '';
     document.querySelector('#inputChangeTo').value = '';
   }
+  if (event.target.matches('#btnDelete')) {
+    var toBeDeleted = document.querySelector('#inputToBeDeleted').value;
+    todoApp.delete(toBeDeleted);
+    document.querySelector('#inputToBeDeleted').value = '';
+  }
+  if (event.target.matches('#btnComplete')) {
+    var done = document.querySelector('#inputComplete').value;
+    todoApp.toggleComplete(done);
+    document.querySelector('#inputComplete').value = '';
+  }
 }
 
-document.addEventListener('input', clickHandler, false);
+document.addEventListener('click', clickHandler, false);
 
 })()
