@@ -1,64 +1,44 @@
 ;(function(){
- 'use strict';
+'use strict';
 
-var todoApp = {
-	todos: [],
-  listTodos: function() {
-    if (this.todos.length < 1) {
-    	console.log('No todos');
-      return;
+  var todoApp = {
+    todos: [],
+    display: function () {
+      console.log("My Todos: ", this.todos);
+    },
+    addNew: function (todoText) {
+      this.todos.push({
+        todo: todoText,
+        complete: false
+      })
+      this.display()
+    },
+    change: function (todoText, changeTo) {
+      this.todos.forEach(function (item) {
+        if (item.todo === todoText) {
+          item.todo = changeTo;
+        } else {
+          console.log(todoText + " is not listed");
+        }
+      })
+      this.display()
+    },
+    delete: function (todoText) {
+      this.todos.forEach(function (item, idx, array) {
+        if (item.todo === todoText) {
+          array.splice(idx, 1)
+        }
+      })
+      this.display()
+    },
+    toggleComplete: function (todoText) {
+      this.todos.forEach(function (item) {
+        if (item.todo === todoText) {
+          item.complete = !item.complete
+        }
+      })
+      this.display();
     }
-    for (var item of this.todos) {
-    	if (item.complete) {
-        console.log("(x) ", item.todoText)
-      } else {
-      	console.log("( ) " + item.todoText)
-      }
-    }
-  	console.log(this.todos)
-  },
-  addTodo: function(todoText) {
-    this.todos.push({
-    	todoText: todoText,
-      complete: false
-    })
-// 	this.listTodos();
-  },
-  editTodo: function(todoText, todoUpdate){
-  	this.todos.forEach(function(item, index){
-    	if (item.todoText === todoText) {
-      	item.todoText = todoUpdate
-      }
-    })
-//     this.listTodos();
-  },
-  markComplete: function(todoText){
-    for (var item of this.todos) {
-			if (item.todoText === todoText) {
-      	item.complete = true;
-      }
-    }
-    this.listTodos();
   }
- }
-
-
-var para = document.querySelector('#idPara')
-
-function clickHandler(event){
-  if (!event.target.matches('button')) return;
-  if (event.target.matches("#idDisplay")) {
-      todoApp.listTodos();
-  }
-  if (event.target.matches("#idToggle")) {
-      todoApp.markComplete()
-  }
-}
-
-
-document.addEventListener('click', clickHandler, false)
-
 
 })()
-
-
