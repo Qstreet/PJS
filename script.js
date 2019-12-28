@@ -7,29 +7,20 @@
 
   var todoApp = {
     todos: [],
-    display: function() {
-      if (this.todos.length < 1) {
-        console.log("No todos today");
-      }
-      console.log("My Todos: ", this.todos);
-    },
     addNew: function(todoText) {
       this.todos.push({
         todo: todoText,
         complete: false
       });
-      this.display();
       view.displayTodos();
     },
     change: function(todoText, changeTo) {
       this.todos.forEach(function(item) {
         if (item.todo === todoText) {
           item.todo = changeTo;
-        } else {
-          console.log(todoText + " is not listed");
         }
       });
-      this.display();
+      view.displayTodos();
     },
     delete: function(todoText) {
       this.todos.forEach(function(item, idx, array) {
@@ -37,7 +28,7 @@
           array.splice(idx, 1);
         }
       });
-      this.display();
+      view.displayTodos();
     },
     toggleComplete: function(todoText) {
       this.todos.forEach(function(item) {
@@ -45,15 +36,17 @@
           item.complete = !item.complete;
         }
       });
-      this.display();
-    }
-    /* close todoApp object */
-  };
+      view.displayTodos();
+    },
+    toggleAll:  function() {
 
-  console.log("54", todoApp.todos);
+    }
+    
+  }; /* close todoApp object */
 
   var view = {
     displayTodos: function() {
+      debugger;
       if (todoApp.todos.length < 1) {
         return "none";
       }
@@ -77,10 +70,6 @@
 
   function clickHandler(event) {
     if (!event.target.matches("button")) return;
-    console.log(event);
-    if (event.target.matches("#btnDisplay")) {
-      todoApp.display();
-    }
     if (event.target.matches("#btnToggle")) {
       todoApp.toggleComplete();
     }
@@ -101,10 +90,31 @@
       todoApp.delete(toBeDeleted);
       document.querySelector("#inputToBeDeleted").value = "";
     }
+
     if (event.target.matches("#btnComplete")) {
       var done = document.querySelector("#inputComplete").value;
       todoApp.toggleComplete(done);
       document.querySelector("#inputComplete").value = "";
+    }
+
+    if (event.target.matches("#btnToggle")) {
+      var length = todoApp.todos.length;
+      var numComplete = 0;
+
+      todoApp.todos.forEach(function(item, idx) {
+        if (item.complete) {
+          numComplete = numComplete + 1;
+        }
+      });
+      if (numComplete === length) {
+        todoApp.todos.forEach(function(item, idx) {
+          item.complete = false;
+        });
+      } else {
+        todoApp.todos.forEach(function(item, idx) {
+          item.complete = true;
+        });
+      }
     }
   }
 
