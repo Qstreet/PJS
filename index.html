@@ -1,36 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./style.css">
   <title>PJS</title>
 </head>
+
 <body>
   <h1>Todo List</h1>
-  <button id="btnToggle">Toggle All</button>
-  
-  <div>
-    <button id="btnAdd">Add</button>
-    <input type="text" id="inputAdd">
-  </div><div>
-    <button id="btnChange">Change</button>
-    <input type="text" id="inputToBeChanged">
-    <input type="text" id="inputChangeTo">
-  </div>
 
-  <div>
-    <button id="btnDelete">Delete</button>
-    <input type="text" id="inputToBeDeleted">
-  </div>
-  
-  <div>
-    <button id="btnComplete">Complete</button>
-    <input type="text" id="inputComplete">
-  </div>
+  <form id="form">
+    <div>
+      <button id="btnAdd">Add</button>
+      <input type="text" id="inputAdd" />
+    </div>
 
-  <ul id="todosUl"></ul>
+    <div>
+      <button id="btnChange">Edit</button>
+      <input type="text" id="inputToBeChanged" />
+      <input type="text" id="inputChangeTo" />
+    </div>
 
-  <script src='./script.js'></script>
+    <div>
+      <button id="btnComplete">Complete</button>
+      <input type="text" id="inputComplete" />
+    </div>
+
+  </form>
+
+  <p>Todo Items:</p>
+
+  <ol id="todosOl"></ol>
+  <button id="btnToggle">Toggle</button>
+
+  <script src="./script.js"></script>
 </body>
+
 </html>

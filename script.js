@@ -1,122 +1,140 @@
-(function() {
-  // 'use strict';
+// https://q-todo-2019-12-29.glitch.me
 
-  /**
-   * VARIABLES
-   */
+; (function () {
+  'use strict';
+
+  // OBJECTS
 
   var todoApp = {
     todos: [],
-    addNew: function(todoText) {
+
+    addTodo: function (todoText) {
       this.todos.push({
         todo: todoText,
         complete: false
       });
       view.displayTodos();
     },
-    change: function(todoText, changeTo) {
-      this.todos.forEach(function(item) {
-        if (item.todo === todoText) {
-          item.todo = changeTo;
-        }
-      });
-      view.displayTodos();
-    },
-    delete: function(todoText) {
-      this.todos.forEach(function(item, idx, array) {
-        if (item.todo === todoText) {
-          array.splice(idx, 1);
-        }
-      });
-      view.displayTodos();
-    },
-    toggleComplete: function(todoText) {
-      this.todos.forEach(function(item) {
-        if (item.todo === todoText) {
-          item.complete = !item.complete;
-        }
-      });
-      view.displayTodos();
-    },
-    toggleAll:  function() {
 
-    }
-    
-  }; /* close todoApp object */
+    editTodo: function (todo, edits) {
+      this.todos.forEach(function (item, idx, arr) {
+        item.todo === todo ? (item.todo = edits) : "";
+      });
+      view.displayTodos();
+    },
 
-  var view = {
-    displayTodos: function() {
-      debugger;
-      if (todoApp.todos.length < 1) {
-        return "none";
-      }
-      var todosUl = document.querySelector("#todosUl");
-      todosUl.innerHTML = "";
-      todoApp.todos.forEach(function(item, idx) {
-        var todoLi = document.createElement("li");
+    deleteTodo: function (index) {
+      this.todos.forEach(function (item, i, arr) {
+        // convert index (str) to num with parseInt() as i is an integer and used in splice
+        var indexNum = parseInt(index);
+        i === indexNum ? arr.splice(i, 1) : "";
+      });
+      view.displayTodos();
+    },
+
+    toggleComplete: function (todo) {
+      this.todos.forEach(function (item, idx) {
+        item.todo === todo ? (item.complete = !item.complete) : "";
+      });
+      view.displayTodos();
+    },
+
+    toggleAll: function () {
+      var count = 0;
+      this.todos.forEach(function (item, idx) {
         if (item.complete) {
-          todoLi.textContent = "(x) " + item.todo;
-        } else {
-          todoLi.textContent = "( ) " + item.todo;
-        }
-        todosUl.appendChild(todoLi);
-      });
-    }
-  };
-
-  /**
-   * Listeners and Event Handlers
-   */
-
-  function clickHandler(event) {
-    if (!event.target.matches("button")) return;
-    if (event.target.matches("#btnToggle")) {
-      todoApp.toggleComplete();
-    }
-    if (event.target.matches("#btnAdd")) {
-      var inputValue = document.querySelector("#inputAdd").value;
-      todoApp.addNew(inputValue);
-      document.querySelector("#inputAdd").value = "";
-    }
-    if (event.target.matches("#btnChange")) {
-      var toBeChanged = document.querySelector("#inputToBeChanged").value;
-      var changeTo = document.querySelector("#inputChangeTo").value;
-      todoApp.change(toBeChanged, changeTo);
-      document.querySelector("#inputToBeChanged").value = "";
-      document.querySelector("#inputChangeTo").value = "";
-    }
-    if (event.target.matches("#btnDelete")) {
-      var toBeDeleted = document.querySelector("#inputToBeDeleted").value;
-      todoApp.delete(toBeDeleted);
-      document.querySelector("#inputToBeDeleted").value = "";
-    }
-
-    if (event.target.matches("#btnComplete")) {
-      var done = document.querySelector("#inputComplete").value;
-      todoApp.toggleComplete(done);
-      document.querySelector("#inputComplete").value = "";
-    }
-
-    if (event.target.matches("#btnToggle")) {
-      var length = todoApp.todos.length;
-      var numComplete = 0;
-
-      todoApp.todos.forEach(function(item, idx) {
-        if (item.complete) {
-          numComplete = numComplete + 1;
+          count = count + 1;
         }
       });
-      if (numComplete === length) {
-        todoApp.todos.forEach(function(item, idx) {
+      if (count === this.todos.length) {
+        this.todos.forEach(function (item) {
           item.complete = false;
         });
       } else {
-        todoApp.todos.forEach(function(item, idx) {
+        this.todos.forEach(function (item) {
           item.complete = true;
         });
       }
+      view.displayTodos();
+    }
+  };
+
+  // EVENT HANDLERS
+
+  function clickHandler(event) {
+    if (!event.target.closest("button")) return;
+    event.preventDefault();
+    //    console.log(event.target);
+
+    if (event.target.matches("#btnAdd")) {
+      let addTodoText = document.querySelector("#inputAdd");
+      todoApp.addTodo(addTodoText.value);
+      addTodoText.value = "";
+    }
+
+    if (event.target.matches("#btnToggle")) {
+      todoApp.toggleAll();
+    }
+
+    if (event.target.matches("#btnChange")) {
+      let inputToBeChanged = document.querySelector("#inputToBeChanged");
+      let inputChangeTo = document.querySelector("#inputChangeTo");
+      todoApp.editTodo(inputToBeChanged.value, inputChangeTo.value)
+      inputToBeChanged.value = '';
+      inputChangeTo.value = '';
+    }
+
+    if (event.target.matches("#btnComplete")) {
+      let toggle = document.querySelector("#inputComplete");
+      todoApp.toggleComplete(toggle.value);
+      toggle.value = "";
+    }
+
+    if (event.target.matches(".deleteBtn")) {
+      // parentNode.id matches index on todo in each li
+      var idNum = event.target.parentNode.id;
+      todoApp.deleteTodo(idNum);
     }
   }
 
   document.addEventListener("click", clickHandler, false);
+
+  // VIEW TEMPLATE
+  // only displays. No data storage or logic
+
+  var view = {
+    displayTodos: function () {
+      var todosOl = document.querySelector("#todosOl");
+      todosOl.innerHTML = "";
+      todoApp.todos.forEach(function (item, idx, arr) {
+        var todoLi = document.createElement("li");
+
+        // add id to each todo to hook delete button. id same as idx of todos array
+        todoLi.setAttribute("id", idx);
+
+        // clear DOM to avoid adding new todo to old list
+        var todoTextCompleteState = "";
+
+        item.complete
+          ? (todoTextCompleteState = "(x) " + item.todo + " ")
+          : (todoTextCompleteState = "( ) " + item.todo + " ");
+
+        todoLi.textContent = todoTextCompleteState;
+
+        // forEach loop breaks 'this' so I must use view.createDeleteBtn()
+        todoLi.appendChild(view.createDeleteBtn());
+        todosOl.appendChild(todoLi);
+      });
+    },
+    createDeleteBtn: function () {
+      var deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.className = "deleteBtn";
+      return deleteBtn;
+    }
+  };
+
+  todoApp.addTodo("Place Holder");
+
+
 })();
