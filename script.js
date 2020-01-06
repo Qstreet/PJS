@@ -15,7 +15,7 @@
       });
       view.displayTodos();
     },
-
+ 
     editTodo: function (todo, edits) {
       this.todos.forEach(function (item, idx, arr) {
         item.todo === todo ? (item.todo = edits) : "";
